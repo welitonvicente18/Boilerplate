@@ -1,4 +1,4 @@
-import '../css/app.css';
+import '../css/client.css';
 
 import { createApp, h } from 'vue';
 import type { DefineComponent } from 'vue';

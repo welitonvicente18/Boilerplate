@@ -9,3 +9,7 @@ Route::get('/teste', function () {
 Route::get('/', function () {
     return view('welcome');
 });
+
+require_once 'admin.php';
+require_once 'client.php';
+require_once 'public.php';

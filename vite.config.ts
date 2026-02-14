@@ -7,7 +7,10 @@ import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/js/app.js',
+                'resources/js/client.js'
+            ],
             refresh: true,
         }),
         tailwindcss(),
