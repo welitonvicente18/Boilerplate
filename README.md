@@ -1,60 +1,367 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Boilerplate Laravel + Inertia + Vue 3
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Boilerplate base para iniciar projetos modernos utilizando Laravel com stack completa frontend + backend integrada.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📦 Stack Principal
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Laravel com Sail (Docker)
+- Inertia.js
+- Vue 3
+- Vite
+- TypeScript
+- TailwindCSS
+- ESLint
+- Prettier
+- WayFinder
+- Ziggy
+- Laravel Pail
+- PestPHP
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🌎 Localização
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Projeto configurado para **pt-BR**, utilizando:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+https://github.com/lucascudo/laravel-pt-BR-localization
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🐳 Ambiente com Docker (Laravel Sail)
 
-### Premium Partners
+Este projeto utiliza o Laravel Sail, portanto não é necessário instalar PHP, MySQL ou Node diretamente na máquina.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Subir containers
 
-## Contributing
+```bash
+./vendor/bin/sail up -d
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Ou criar alias:
 
-## Code of Conduct
+```bash
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Depois:
 
-## Security Vulnerabilities
+```bash
+sail up -d
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## ⚙️ Instalação do Projeto
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Boilerplate
+### 1️⃣ Criar projeto Laravel
+
+Utilize o instalador oficial:
+
+https://php.new/
+
+```bash
+laravel new nomedosistema
+```
+
+---
+
+### 2️⃣ Instalar Sail
+
+```bash
+composer require laravel/sail --dev
+php artisan sail:install
+```
+
+---
+
+### 3️⃣ Instalar dependências PHP
+
+```bash
+sail composer install
+```
+
+---
+
+### 4️⃣ Instalar dependências Node
+
+```bash
+sail npm install
+```
+
+---
+
+### 5️⃣ Copiar .env
+
+```bash
+cp .env.example .env
+```
+
+---
+
+### 6️⃣ Gerar chave da aplicação
+
+```bash
+sail artisan key:generate
+```
+
+---
+
+### 7️⃣ Rodar migrations
+
+```bash
+sail artisan migrate
+```
+
+---
+
+## 🔧 Configurações Padrão Recomendadas
+
+Editar:
+
+```
+app/Providers/AppServiceProvider.php
+```
+
+Adicionar no método `boot()`:
+
+```php
+
+public function boot(): void
+{
+    // Habilita erros no mode de desenvolvimento
+        Model::shouldBeStrict(!$this->app->isProduction());
+
+        // Não deixa executar comendas destrutivos no DB
+        DB::prohibitDestructivecommands($this->app->isProduction());
+
+        // Forçar o vite
+        Vite::useAggressivePrefetching();
+
+        //força o HTTP
+        URL::forceHttps($this->app->isProduction());
+
+        // padrão de senha no min 12 max 255 e que não seja comprometida
+        Password::defaults(fn (): ?Password => app()->isProduction() ? Password::min(12)->max(255)->uncompromised() : null);
+}
+```
+
+---
+
+## ⚡ Inertia.js + Vue 3
+
+### Instalação Server-Side
+
+```bash
+sail composer require inertiajs/inertia-laravel
+```
+
+Finalize seguindo a documentação oficial.
+
+### Instalação Client-Side (Vue + Vite)
+
+Documentação:
+
+https://laravel.com/docs/12.x/vite#vue  
+https://laravel.com/docs/12.x/vite#inertia
+
+---
+
+## 🟦 TypeScript (Opcional)
+
+```bash
+sail npm install -D typescript
+sail npx tsc --init
+```
+
+Criar o arquivo `tsconfig.json` conforme necessidade do projeto.
+
+---
+
+## 🎨 Prettier (Padronização de Código)
+
+Instalar:
+
+```bash
+sail npm install -D prettier \
+prettier-plugin-organize-imports \
+prettier-plugin-classnames \
+prettier-plugin-merge \
+prettier-plugin-tailwindcss
+```
+
+Instalar utilitários Tailwind:
+
+```bash
+sail npm install -D tailwind-merge clsx class-variance-authority tw-animate-css
+```
+
+Adicionar no `package.json`:
+
+```json
+"prettier:analyse": "prettier --check resources/",
+"prettier:execute": "prettier --write resources/"
+```
+
+Executar:
+
+```bash
+sail npm run prettier:analyse
+sail npm run prettier:execute
+```
+
+Criar `.prettierignore`:
+
+```
+resources/views/mail*
+```
+
+---
+
+## 🧹 ESLint (Qualidade de Código)
+
+Instalar versões compatíveis:
+
+```bash
+sail npm install -D \
+eslint@9 \
+@eslint/js@9 \
+eslint-config-prettier \
+eslint-plugin-vue@9 \
+@vue/eslint-config-typescript@14 \
+typescript-eslint@8
+```
+
+Criar:
+
+```
+eslint.config.ts
+```
+
+Adicionar no `package.json`:
+
+```json
+"lint": "eslint . --fix"
+```
+
+Executar:
+
+```bash
+sail npm run lint
+```
+
+Regras recomendadas:
+
+```ts
+rules: {
+  'vue/multi-word-component-names': 'off',
+  '@typescript-eslint/no-explicit-any': 'off',
+  'no-undef': 'error',
+}
+```
+
+---
+
+## 🧭 WayFinder
+
+Repositório:
+
+https://github.com/laravel/wayfinder
+
+Adicionar no `vite.config.ts`:
+
+```ts
+wayfinder({
+  path: 'resources/js/wayfinder',
+  formVariants: false,
+}),
+```
+
+---
+
+## 🔗 Ziggy
+
+Repositório:
+
+https://github.com/tighten/ziggy
+
+Criar `types.d.ts`:
+
+```ts
+import { route as routeFn } from 'ziggy-js';
+
+declare global {
+  var route: typeof routeFn;
+}
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    route: typeof routeFn;
+  }
+}
+```
+
+Adicionar no `tsconfig.json`:
+
+```json
+"paths": {
+  "@/*": ["./resources/js/*"],
+  "ziggy-js": ["vendor/tightenco/ziggy"]
+}
+```
+
+Adicionar no `vite.config.ts`:
+
+```ts
+resolve: {
+  alias: {
+    'ziggy-js': '/vendor/tightenco/ziggy',
+  },
+},
+```
+
+---
+
+## 📜 Laravel Pail
+
+Repositório oficial:
+
+https://github.com/laravel/pail
+
+---
+
+## 🧪 Testes com PestPHP
+
+Documentação:
+
+https://pestphp.com/docs/installation
+
+Inicializar:
+
+```bash
+sail bin pest --init
+```
+
+Executar testes:
+
+```bash
+sail bin pest
+```
+
+### Plugins úteis
+
+Migração PHPUnit → Pest (Drift)  
+https://pestphp.com/docs/migrating-from-phpunit-guide
+
+Plugin Laravel  
+https://pestphp.com/docs/plugins#laravel
+
+Browser Testing (Pest v4)  
+https://pestphp.com/docs/pest-v4-is-here-now-with-browser-testing
+
+---
+
+## 📄 License
+
+The Laravel framework is open-sourced software licensed under the MIT License.
